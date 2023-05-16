@@ -145,7 +145,7 @@ class Beam(pg.sprite.Sprite):
     """
     ビームに関するクラス
     """
-    def __init__(self, bird: Bird):
+    def __init__(self, bird: Bird, spin=0):
         """
         ビーム画像Surfaceを生成する
         引数 bird：ビームを放つこうかとん
@@ -153,6 +153,7 @@ class Beam(pg.sprite.Sprite):
         super().__init__()
         self.vx, self.vy = bird.get_direction()
         angle = math.degrees(math.atan2(-self.vy, self.vx))
+        angle += spin  # 追加機能4
         self.image = pg.transform.rotozoom(pg.image.load(f"ex04/fig/beam.png"), angle, 2.0)
         self.vx = math.cos(math.radians(angle))
         self.vy = -math.sin(math.radians(angle))
@@ -169,6 +170,19 @@ class Beam(pg.sprite.Sprite):
         self.rect.move_ip(+self.speed*self.vx, +self.speed*self.vy)
         if check_bound(self.rect) != (True, True):
             self.kill()
+
+
+class NeoBeam:  # 追加機能4
+    def __init__(self, bird:Bird, num:int):
+        self.bird = bird
+        self.num = num
+
+    def gen_beams(self):
+        beam_ls = []
+        for spin in range(-50, 51, 25):
+            beam = Beam(self.bird, spin)
+            beam_ls.append(beam)
+        return beam_ls
 
 
 class Explosion(pg.sprite.Sprite):
@@ -265,11 +279,18 @@ def main():
     clock = pg.time.Clock()
     while True:
         key_lst = pg.key.get_pressed()
+
+        shift_pressed = False  # 追加機能4
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return 0
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
+
+                if pg.key.get_mods() & pg.KMOD_LSHIFT:  # 追加機能4
+                    shift_pressed = True
+
         screen.blit(bg_img, [0, 0])
 
         if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
@@ -295,6 +316,12 @@ def main():
             pg.display.update()
             time.sleep(2)
             return
+        
+        if shift_pressed:  # 追加機能4
+            if pg.key.get_mods() & pg.KMOD_LSHIFT:
+                num_beams = 5
+                neo_beam = NeoBeam(bird, num_beams)
+                beams.add(*neo_beam.gen_beams())
 
         bird.update(key_lst, screen)
         beams.update()
