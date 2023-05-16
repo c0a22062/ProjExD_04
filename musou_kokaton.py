@@ -365,7 +365,7 @@ def main():
             if event.type == pg.QUIT:
                 return 0
             if event.type == pg.KEYDOWN and event.key == pg.K_TAB:  
-                if score.score > 50:
+                if score.score >= 50:
                     score.score_up(-50)
                     gravity_group.add(Gravity(bird,200,500))
 
@@ -375,11 +375,11 @@ def main():
                     shift_pressed = True
                 
             if event.type == pg.KEYDOWN and event.key == pg.K_CAPSLOCK:
-                if score.score > 50 and len(shields) == 0:
+                if score.score >= 50 and len(shields) == 0:
                     shields.add(Shield(bird, 500))
                     score.score -= 50
                     
-            if  event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.score >= 100:
+            if  event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.score <= 100:
                 score.score -= 100
                 bird.change_state("hyper", 500)
                 
@@ -427,6 +427,7 @@ def main():
             for bomb in pg.sprite.spritecollide(bird, bombs, True):
                 exps.add(Explosion(bomb, 50)) 
                 score.score_up(1)
+
         else:
             if len(pg.sprite.spritecollide(bird, bombs, True)) != 0:
                 bird.change_img(8, screen) # こうかとん悲しみエフェクト
