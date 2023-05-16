@@ -371,14 +371,14 @@ def main():
 
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
+                if pg.key.get_mods() & pg.KMOD_LSHIFT:  # 追加機能4
+                    shift_pressed = True
                 
             if event.type == pg.KEYDOWN and event.key == pg.K_CAPSLOCK:
                 if score.score > 50 and len(shields) == 0:
                     shields.add(Shield(bird, 500))
                     score.score -= 50
                     
-                if pg.key.get_mods() & pg.KMOD_LSHIFT:  # 追加機能4
-                    shift_pressed = True
             if  event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.score >= 100:
                 score.score -= 100
                 bird.change_state("hyper", 500)
