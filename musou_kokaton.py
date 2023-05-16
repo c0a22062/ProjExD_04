@@ -117,7 +117,7 @@ class Bird(pg.sprite.Sprite):
             if self.hyper_life >= -1:
                 self.hyper_life -= 1
             if self.hyper_life < 0: 
-                self.change_state("nomal", -1)
+                self.change_state("nomal", -1)  # self.hyper_lifeが0未満になったとき、stateをnomalにする
         screen.blit(self.image, self.rect)
     
     def get_direction(self) -> tuple[int, int]:
