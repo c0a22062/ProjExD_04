@@ -72,7 +72,7 @@ class Bird(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = xy
         self.speed = 10
-        self.state = "nomal"
+        self.state = "normal"
         self.hyper_life = -1
 
     def change_img(self, num: int, screen: pg.Surface):
@@ -116,10 +116,9 @@ class Bird(pg.sprite.Sprite):
             self.image = self.imgs[self.dire]
         if self.state == "hyper":
             self.image = pg.transform.laplacian(self.image)
-            if self.hyper_life >= -1:
-                self.hyper_life -= 1
-            if self.hyper_life < 0: 
-                self.change_state("nomal", -1)  # self.hyper_lifeが0未満になったとき、stateをnomalにする
+            self.hyper_life -= 1
+            if self.hyper_life <= 0:
+                self.change_state("normal", -1)  # self.hyper_lifeが0未満になったとき、stateをnomalにする
         screen.blit(self.image, self.rect)
     
         if key_lst[pg.K_LSHIFT]:
@@ -379,7 +378,7 @@ def main():
                     shields.add(Shield(bird, 500))
                     score.score -= 50
                     
-            if  event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.score <= 100:
+            if  event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.score >= 100:
                 score.score -= 100
                 bird.change_state("hyper", 500)
                 
@@ -409,13 +408,6 @@ def main():
         for bomb in pg.sprite.groupcollide(bombs, shields, True, False).keys():
             exps.add(Explosion(bomb, 50))  # 爆発エフェクト
             score.score_up(1)  # 1点アップ
-
-        if len(pg.sprite.spritecollide(bird, bombs, True)) != 0:
-            bird.change_img(8, screen) # こうかとん悲しみエフェクト
-            score.update(screen)
-            pg.display.update()
-            time.sleep(2)
-            return
         
         if shift_pressed:  # 追加機能4
             if pg.key.get_mods() & pg.KMOD_LSHIFT:
