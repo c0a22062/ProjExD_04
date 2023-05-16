@@ -117,9 +117,13 @@ class Bird(pg.sprite.Sprite):
 
         if self.state == "hyper":
             self.image = pg.transform.laplacian(self.image)
+            
             if self.hyper_life >= -1:
                 self.hyper_life -= 1
             if self.hyper_life < 0: 
+            self.hyper_life -= 1
+            if self.hyper_life <= 0:
+              
                 self.change_state("normal", -1)  # self.hyper_lifeが0未満になったとき、stateをnomalにする
         screen.blit(self.image, self.rect)
     
@@ -366,7 +370,7 @@ def main():
             if event.type == pg.QUIT:
                 return 0
             if event.type == pg.KEYDOWN and event.key == pg.K_TAB:  
-                if score.score > 50:
+                if score.score >= 50:
                     score.score_up(-50)
                     gravity_group.add(Gravity(bird,200,500))
 
@@ -376,7 +380,7 @@ def main():
                     shift_pressed = True
                 
             if event.type == pg.KEYDOWN and event.key == pg.K_CAPSLOCK:
-                if score.score > 50 and len(shields) == 0:
+                if score.score >= 50 and len(shields) == 0:
                     shields.add(Shield(bird, 500))
                     score.score -= 50
                     
@@ -421,6 +425,7 @@ def main():
             for bomb in pg.sprite.spritecollide(bird, bombs, True):
                 exps.add(Explosion(bomb, 50)) 
                 score.score_up(1)
+
         else:
             if len(pg.sprite.spritecollide(bird, bombs, True)) != 0:
                 bird.change_img(8, screen) # こうかとん悲しみエフェクト
