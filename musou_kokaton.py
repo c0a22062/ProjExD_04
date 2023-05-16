@@ -93,6 +93,7 @@ class Bird(pg.sprite.Sprite):
                 self.rect.move_ip(+self.speed*mv[0], +self.speed*mv[1])
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
+            
         if check_bound(self.rect) != (True, True):
             for k, mv in __class__.delta.items():
                 if key_lst[k]:
@@ -101,6 +102,12 @@ class Bird(pg.sprite.Sprite):
             self.dire = tuple(sum_mv)
             self.image = self.imgs[self.dire]
         screen.blit(self.image, self.rect)
+    
+        if key_lst[pg.K_LSHIFT]:
+            self.speed = 20
+        else:
+            self.speed = 10
+                        
     
     def get_direction(self) -> tuple[int, int]:
         return self.dire
@@ -256,10 +263,10 @@ def main():
     score = Score()
 
     bird = Bird(3, (900, 400))
-    bombs = pg.sprite.Group()
-    beams = pg.sprite.Group()
-    exps = pg.sprite.Group()
-    emys = pg.sprite.Group()
+    bombs = pg.sprite.Group()  # bombのグループ
+    beams = pg.sprite.Group()  # beamのグループ
+    exps = pg.sprite.Group()  # 爆発のグループ
+    emys = pg.sprite.Group()  # 鉄器のグループ
 
     tmr = 0
     clock = pg.time.Clock()
@@ -270,6 +277,8 @@ def main():
                 return 0
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
+            
+            
         screen.blit(bg_img, [0, 0])
 
         if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
