@@ -114,10 +114,16 @@ class Bird(pg.sprite.Sprite):
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self.dire = tuple(sum_mv)
             self.image = self.imgs[self.dire]
+
         if self.state == "hyper":
             self.image = pg.transform.laplacian(self.image)
+            
+            if self.hyper_life >= -1:
+                self.hyper_life -= 1
+            if self.hyper_life < 0: 
             self.hyper_life -= 1
             if self.hyper_life <= 0:
+              
                 self.change_state("normal", -1)  # self.hyper_lifeが0未満になったとき、stateをnomalにする
         screen.blit(self.image, self.rect)
     
